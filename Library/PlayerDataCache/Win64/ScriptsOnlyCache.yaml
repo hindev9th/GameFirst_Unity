@@ -107,11 +107,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 4344}
     - Class: 114
-      Script: {instanceID: 4516}
+      Script: {instanceID: 4518}
     - Class: 114
-      Script: {instanceID: 4676}
+      Script: {instanceID: 4678}
     - Class: 114
-      Script: {instanceID: 5032}
+      Script: {instanceID: 5034}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -232,11 +232,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 4366}
     - Class: 114
-      Script: {instanceID: 4516}
+      Script: {instanceID: 4476}
     - Class: 114
-      Script: {instanceID: 5504}
+      Script: {instanceID: 4518}
     - Class: 114
-      Script: {instanceID: 52576}
+      Script: {instanceID: 5506}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -1088,6 +1088,12 @@ ScriptsOnlyBuild:
     className: CinemachineGroupComposer
   - hash:
       serializedVersion: 2
+      Hash: c081d6fd9dc874e6ae27ec60f5f3641d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Point
+  - hash:
+      serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -1356,12 +1362,6 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: TMPro.Examples
     className: TMP_TextEventCheck
-  - hash:
-      serializedVersion: 2
-      Hash: c081d6fd9dc874e6ae27ec60f5f3641d
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: Point
   platform: 19
   scenePathNames:
   - Assets/Scenes/Menu.unity

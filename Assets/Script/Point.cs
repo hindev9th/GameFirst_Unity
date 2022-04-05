@@ -22,9 +22,6 @@ public class Point : MonoBehaviour
         Pointt.text = _player._point.ToString();
     }
 
-    private void Start(){
-        
-    }
     // Update is called once per frame
     void Update()
     {
@@ -32,6 +29,11 @@ public class Point : MonoBehaviour
         
     }
 
+    public void Update_point(){
+        Physical.text = _player._Physical.ToString();
+        Strength.text = _player._Strength.ToString();
+        Pointt.text = _player._point.ToString();
+    }
     public void up_Physical(){
         if(Int32.Parse(Pointt.text) > 0){
             Pointt.text = (Int32.Parse(Pointt.text) - 1).ToString();
@@ -56,7 +58,8 @@ public class Point : MonoBehaviour
             Strength.text = (Int32.Parse(Strength.text) - 1).ToString();
         }
     }
-    public void Update_point(){
+
+    public void Update_point_Comfirm(){
         _player._Physical = Int32.Parse(Physical.text);
         _player._Strength = Int32.Parse(Strength.text);
         _player._point = Int32.Parse(Pointt.text);
