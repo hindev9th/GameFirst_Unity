@@ -4,20 +4,24 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    public Animator animator;
-    public Transform attackPoint;
-    public LayerMask enemyLayers;
+    private Animator animator;
+    [SerializeField]private Transform attackPoint;
+    [SerializeField]private LayerMask enemyLayers;
 
-
+    private Player player;
     public float attackRange = 0.5f;
     public int attackDamage = 10;
-    public int skillDamege = 20;
 
     public float attackRate = 2f;
     public float nextAttackTime = .2f;
-    int damageRanDom;
-    bool canAttack;
-    float AttackTime;
+    private int damageRanDom;
+    private bool canAttack;
+    private float AttackTime;
+
+    private void Awake(){
+        animator = GetComponent<Animator>();
+        player = GetComponent<Player>();
+    }
     void Start(){
         canAttack = true;
         AttackTime = nextAttackTime;
@@ -27,7 +31,7 @@ public class PlayerCombat : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.J))
         {
-            if( GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().currentHealth <=0){
+            if( player.currentHealth <=0){
             animator.SetBool("IsDie",true);  
             }else{
                 Attack();
@@ -40,7 +44,7 @@ public class PlayerCombat : MonoBehaviour
 
     public void AttackButton(){
         
-        if( GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().currentHealth <=0){
+        if( player.currentHealth <=0){
             animator.SetBool("IsDie",true);  
         }else{
             Attack();

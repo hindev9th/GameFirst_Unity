@@ -4,23 +4,29 @@ using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
 {
-    public Animator animator;
+    private Animator animator;
+    private EnemyData _enemyData;
     // Start is called before the first frame update
     public float enemyCooldown = 1;
-    public int damage = 1;
+    private int damage = 1;
 
     private bool playerInRange = false;
     private bool canAttack = true;
  
 
     public float attackRange = 0.5f;
-    public Transform attackPoint;
-    public LayerMask enemyLayers;
-     bool isDie;
+    [SerializeField]private LayerMask enemyLayers;
+    bool isDie;
     bool m_FacingRight = true;
+
+    private void Awake(){
+        animator = GetComponent<Animator>();
+        _enemyData = GetComponent<EnemyData>();
+    }
     private void Start(){
         
         playerInRange = false;
+        damage = _enemyData._damage;
         StartCoroutine(StartCooldown());
     }
     private void Update()
@@ -30,30 +36,16 @@ public class EnemyAttack : MonoBehaviour
         {
             animator.SetTrigger("Attack");
 
-            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position,attackRange,enemyLayers);
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position,attackRange,enemyLayers);
             foreach (Collider2D Player in hitEnemies)
             {   
-                if (Player.GetComponent<Transform>().position.x <= transform.position.x && m_FacingRight)
-                {
-                    Flip();
-                }
-                if (Player.GetComponent<Transform>().position.x >= transform.position.x && !m_FacingRight)
-                {
-                    Flip();
-                }
-                if(Player.GetComponent<Player>().currentHealth >0)
-                    Player.GetComponent<Player>().TakeDamage(damage);
+                Player.GetComponent<Player>().TakeDamage(damage);
             }
             StartCoroutine(AttackCooldown());
         }
     }
 
-    private void Flip()
-    {        // Switch the way the player is labelled as facing.
-        m_FacingRight = !m_FacingRight;
-
-        transform.Rotate(0,180,0);
-    }
+   
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -83,5 +75,11 @@ public class EnemyAttack : MonoBehaviour
         playerInRange = false;
     }
 
-    
+    void OnDrawGizmosSelected()
+    {
+        if (transform == null)
+            return;
+
+        Gizmos.DrawWireSphere(transform.position,attackRange);
+    }
 }

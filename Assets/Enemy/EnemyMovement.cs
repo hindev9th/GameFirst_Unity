@@ -3,100 +3,72 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
-{
-    //Rigidbody2D enemyRigidBody2D;
-    public Animator animator;
-    //public CharacterController2D controller;
-    public GameObject Enemy;
-    public int UnitsToMove = 2;
-    public float EnemySpeed = 2;
-    float EnemySpeedRun =0;
-    Transform target;
-    Vector2 enemyTran;
-    bool trigger =false;
-    bool isDie;
+{ 
+    private Animator animator;
+    private Rigidbody2D rigidbody2D;
+    private Enemy enemy;
+    [SerializeField]private LayerMask layerMaskEnemy;
+    [SerializeField]private float vision = 2f;
+    [SerializeField]private float Speed =1.5f;
+    private float _currentSpeed;
+    public Vector3 _enemyPosition;
     bool m_FacingRight = true;
-
-    
-    void Start(){
-        isDie = gameObject.GetComponent<Enemy>().isDie = false;
-        StartCoroutine(AttackCooldown());
-        trigger =false;
-        if(!isDie){
-            target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-            enemyTran = transform.parent.transform.position;
-        }
-        
-    }
-    void OnTriggerEnter2D(Collider2D other)
-    {   
-        if (other.gameObject.CompareTag("Player"))
-        {
-            trigger = true;
-        }
-    }
-    
-    void OnTriggerExit2D(Collider2D other)
-    {        
-        if (other.gameObject.CompareTag("Player"))
-        {
-            trigger =false;
-        }
+    private void Awake(){
+        animator = GetComponent<Animator>();
+        rigidbody2D = GetComponent<Rigidbody2D>();
+        enemy = GetComponent<Enemy>();
     }
 
+    private void Start(){
+        _enemyPosition = transform.position;
+    }
     void Update(){
+
+        Collider2D[] hithitEnemies = Physics2D.OverlapCircleAll(transform.position,vision,layerMaskEnemy);
         
-        if(trigger && !isDie){
-            if( Vector2.Distance((Vector2)transform.parent.transform.position ,target.position) <= GameObject.FindGameObjectWithTag("Enemy").GetComponent<EnemyAttack>().attackRange){
-                EnemySpeedRun = 0;
-                animator.SetFloat("Speed",EnemySpeedRun);
+        foreach(Collider2D player in hithitEnemies){
+            if( Vector2.Distance((Vector2)transform.position ,player.transform.position) <= GetComponent<EnemyAttack>().attackRange || enemy.isDie){
+                _currentSpeed =0;
             }else{
-                EnemySpeedRun = EnemySpeed;
-                animator.SetFloat("Speed",EnemySpeedRun);
+                _currentSpeed = Speed;
+                transform.position = Vector2.MoveTowards(transform.position,player.transform.position,_currentSpeed * Time.deltaTime);
             }
 
-            Enemy.transform.position = Vector2.MoveTowards(transform.parent.transform.position,target.position,EnemySpeedRun * Time.deltaTime);
-            
-                if(transform.position.x >= target.position.x && m_FacingRight)
-                    Flip();
-                
-                if(transform.position.x <= target.position.x && !m_FacingRight)
-                    Flip();
+            if (player.transform.position.x <= transform.position.x && m_FacingRight)
+                Flip();
+            if (player.transform.position.x >= transform.position.x && !m_FacingRight)
+                Flip();     
+        }
 
-            
-                
-            
+
+        if(hithitEnemies.Length == 0 && transform.position != _enemyPosition){
+            _currentSpeed = Speed;
+            transform.position = Vector2.MoveTowards(transform.position,_enemyPosition,_currentSpeed * Time.deltaTime);
+
+            if (_enemyPosition.x <= transform.position.x && m_FacingRight)
+                Flip();
+            if (_enemyPosition.x >= transform.position.x && !m_FacingRight)
+                Flip();     
+        }else if(transform.position == _enemyPosition || enemy.isDie){
+            _currentSpeed = 0;
         }
-        if(!trigger && !isDie){
-            if((Vector2)transform.parent.transform.position == enemyTran){
-                EnemySpeedRun = 0;
-                animator.SetFloat("Speed",EnemySpeedRun);
-            }else{
-                EnemySpeedRun = EnemySpeed;
-                animator.SetFloat("Speed",EnemySpeedRun);
-                transform.position = Vector2.MoveTowards(transform.parent.transform.position,enemyTran,EnemySpeedRun * Time.deltaTime);
-            
-                if(transform.parent.transform.position.x >= enemyTran.x && m_FacingRight)
-                    Flip();
-                
-                if(transform.parent.transform.position.x <= enemyTran.x && !m_FacingRight)
-                    Flip();
-            }    
-        }
+        
+        animator.SetFloat("Speed",_currentSpeed);
     }
-    
-    private void Flip()
+
+     private void Flip()
     {        // Switch the way the player is labelled as facing.
         m_FacingRight = !m_FacingRight;
 
-        transform.parent.transform.Rotate(0,180,0);
+        transform.Rotate(0,180,0);
     }
 
-    IEnumerator AttackCooldown()
+    void OnDrawGizmosSelected()
     {
-        yield return new WaitForSeconds(0);
-        trigger = false;
-    }
+        if (transform == null)
+            return;
 
+        Gizmos.DrawWireSphere(transform.position,vision);
+    }
     
 }

@@ -15,6 +15,7 @@ public class PlayerData
     public int _indexHp,
             _indexDamage,
             _point;
+    public bool _isDie;
     public float[] position;
 
     public PlayerData(Player player){
@@ -25,6 +26,7 @@ public class PlayerData
         _indexHp = player._Physical;
         _indexDamage = player._Strength;
         _point = player._point;
+        _isDie = player._isDie;
 
         position = new float[3];
         position[0] = player.transform.position.x;

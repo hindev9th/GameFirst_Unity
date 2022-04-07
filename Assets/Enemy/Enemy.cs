@@ -6,15 +6,11 @@ using TMPro;
 public class Enemy : MonoBehaviour
 {
     private Animator animator;
+    private EnemyData _enemyData;
+    private EnemyMovement _enemyMovement;
     private CircleCollider2D circleCollider2D;
     private HealthBar healthBar;
-    //private int Level = 1;
-    [SerializeField]private int XP = 50;
-    [SerializeField]private int currentHeath;
-    [SerializeField]private int maxHealth = 100;
     
-    
-
     [SerializeField]private GameObject damageTextPrefab, enemyInstance;
     //public string textToDisplay;
 
@@ -26,22 +22,23 @@ public class Enemy : MonoBehaviour
 
     private void Awake(){
         animator = transform.GetComponent<Animator>();
+        _enemyData = GetComponent<EnemyData>();
+        _enemyMovement = GetComponent<EnemyMovement>();
         circleCollider2D = transform.GetComponent<CircleCollider2D>();
         healthBar = transform.GetChild(0).GetChild(0).GetComponent<HealthBar>();
     }
     // Start is called before the first frame update
     void Start()
     {
-        currentHeath = maxHealth;
-        healthBar.SetMaxHealth(maxHealth);
+        healthBar.SetMaxHealth(_enemyData._max_health);
         EnemyPositionRepawn = transform.position;
     }
 
     public void TakeDamage(int damage)
     {
-        currentHeath -= damage;
-        healthBar.SetHealth(currentHeath);
-        if (currentHeath > 0)
+        _enemyData._current_health -= damage;
+        healthBar.SetHealth(_enemyData._current_health);
+        if (_enemyData._current_health > 0)
         {
             GameObject DamageText = Instantiate(damageTextPrefab, enemyOb.position,Quaternion.identity);
             DamageText.transform.GetChild(0).GetComponent<TextMeshPro>().SetText("-"+damage.ToString());
@@ -52,11 +49,6 @@ public class Enemy : MonoBehaviour
         {
             Die();
         }
-
-    }
-    
-    void Update(){
-        
     }
     void Die()
     {
@@ -64,7 +56,7 @@ public class Enemy : MonoBehaviour
         circleCollider2D.enabled = false;
         animator.SetBool("IsDie", true);
         
-        GameObject.Find("Player").GetComponent<Player>().XP(XP);
+        GameObject.Find("Player").GetComponent<Player>().XP(_enemyData._xp);
 
         //Items Chest
         Instantiate(ItemRespawn,transform.position,Quaternion.identity);  
@@ -78,8 +70,9 @@ public class Enemy : MonoBehaviour
         animator.SetBool("IsDie", false);
         isDie = false;
         circleCollider2D.enabled = true;
-        currentHeath = maxHealth;
-        healthBar.SetHealth(currentHeath);
+        transform.position = _enemyMovement._enemyPosition;
+        _enemyData._current_health = _enemyData._max_health;
+        healthBar.SetHealth(_enemyData._current_health);
         animator.SetTrigger("FeedBack");
     }
     

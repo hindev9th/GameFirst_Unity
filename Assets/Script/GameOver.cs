@@ -4,29 +4,23 @@ using UnityEngine;
 
 public class GameOver : MonoBehaviour
 {
-    public Animator animator;
-    public Player player;
-    public PlayerCombat playerCombat;
-
-    public GameObject Notification;
-    //public Transform respawnPoint;
-    // Start is called before the first frame update
-    void Start()
-    {
-        //gameObject.SetActive(false);
-    }
+    [SerializeField]private Animator animator;
+    [SerializeField]private Player player;
+    [SerializeField]private PlayerCombat playerCombat;
+    [SerializeField]private GameObject Notification;
 
     public void PlayAgain(){
+        
         player.level =1;
-        player.currentHealth = 100;
-        player.maxHealth = 100;
+        player.maxHealth = 5*10;
+        player.currentHealth = player.maxHealth;
+        player.MaxXP = 500;
         player.currentXP = 0;
-        player.MaxXP = 1000;
-        player.Damage = playerCombat.attackDamage = 8;
+        player.Damage = playerCombat.attackDamage = (int)(5*1.5);
 
         player.XP(player.currentXP);
 
-        player.transform.position = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().RespawnPoint;
+        player.transform.position = player.RespawnPoint;
 
 
 
@@ -36,13 +30,14 @@ public class GameOver : MonoBehaviour
         animator.SetBool("IsDie",false);  
         animator.SetTrigger("Attack");
         gameObject.SetActive(false);
+        player._isDie = false;
     }
 
     public void Load(){
         try
         {
             PlayerData data = SaveSystem.LoadPlayer();
-
+            player._isDie = data._isDie;
             player.level = data.level;
             player.currentHealth = data.currentHealth;
             player.maxHealth = data.maxHealth;

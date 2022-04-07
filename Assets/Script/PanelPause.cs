@@ -56,8 +56,9 @@ public class PanelPause : MonoBehaviour
 
             player._Strength = data._indexDamage;
             playerCombat.attackDamage = data.Damage;
-
             player._point = data._point;
+
+            player._isDie = data._isDie;
             Vector3 position;
             position.x = data.position[0];
             position.y = data.position[1];

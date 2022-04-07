@@ -14,44 +14,25 @@ public class PlayerMovement : MonoBehaviour
         VerticalMove =0f;
 
 
+    private Player player;
 
-    void Start(){
-        Smoke1.SetActive(false);
-        Smoke2.SetActive(false);
-        
+    private void Awake(){
+        player = GetComponent<Player>();
     }
+    
     // Update is called once per frame
     void Update()
     {
-        
-        
-        
-        horizontalMove = joystick.Horizontal * runSpeed;
-        VerticalMove = joystick.Vertical * runSpeed;
+        if(!player._isDie){
+            horizontalMove = joystick.Horizontal * runSpeed;
+            VerticalMove = joystick.Vertical * runSpeed;
 
-        if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0){
-            horizontalMove = Input.GetAxisRaw("Horizontal")*runSpeed;
-            VerticalMove = Input.GetAxisRaw("Vertical")*runSpeed;
+            if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0){
+                horizontalMove = Input.GetAxisRaw("Horizontal")*runSpeed;
+                VerticalMove = Input.GetAxisRaw("Vertical")*runSpeed;
+            }
         }
-            
-
-        animator.SetFloat("Speed", (Mathf.Abs(VerticalMove)));
-        
-        if (Input.GetAxis("Horizontal") != 0 )
-            animator.SetFloat("Speed", (Mathf.Abs(horizontalMove)));
-         
-
-        if(animator.GetFloat("Speed") >0){
-            Smoke1.SetActive(true);
-            Smoke2.SetActive(true);
-        }else{
-            Smoke1.SetActive(false);
-            Smoke2.SetActive(false);
-        }
-        
-        
-        
-
+        animator.SetFloat("Speed", (Mathf.Abs(VerticalMove)) !=0 ? Mathf.Abs(VerticalMove) : Mathf.Abs(horizontalMove));
 
     }
 
